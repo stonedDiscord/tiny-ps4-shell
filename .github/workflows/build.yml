@@ -1,13 +1,17 @@
 name: Build PKG
 
-on: push
+on:
+  push:
+  pull_request:
+  repository_dispatch:
+    types: [run_build]
 
 jobs:
   build:
     runs-on: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
 
@@ -18,7 +22,7 @@ jobs:
 
     - name: Restore cached Orbis SDK
       id: cache-orbis
-      uses: actions/cache/restore@v3
+      uses: actions/cache/restore@v4
       with:
         path: OpenOrbis
         key: orbis
@@ -37,7 +41,7 @@ jobs:
 
     - name: Cache Orbis SDK
       if: ${{ !steps.cache-orbis.outputs.cache-hit }}
-      uses: actions/cache/save@v3
+      uses: actions/cache/save@v4
       with:
         path: OpenOrbis
         key: orbis
@@ -48,6 +52,6 @@ jobs:
         make
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         path: /home/runner/work/tiny-ps4-shell/tiny-ps4-shell/*.pkg
